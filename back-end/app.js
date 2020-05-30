@@ -1,13 +1,12 @@
 require('dotenv').config();
-// const path = require('path');
 const express = require('express');
 const body_parser = require('body-parser');
 const log = require('./logger/logger');
-// const reporter = require('./reporter/api');
+const forms_api = require('./forms/api');
+const cors = require("cors");
 
 const port = process.env.PORT || 8000;
 const app = express();
-const cors = require("cors");
 
 
 app.use(body_parser.json());
@@ -28,18 +27,14 @@ app.use(function(req, res, next) {
         return res.status(200).end();
     }
     next();
-    });
-var cnt = 0;
-app.get('/' , (req , res) =>{
-    cnt++;
-    log('info' , `new ${req.method} request on ${req.originalUrl}`);
-    return res.status(200).json({forms: [cnt , 2]})
 });
-// app.use(function(req, res) {
-// 	    log('error' , `url: ${req.url} not found.`);
-// 	    return res.status(404).json({message: `url: ${req.url} Not found.`});
-//     }
-// );
+
+app.use("/api/form" , forms_api);
+
+app.use(function(req, res) {
+	    log('error' , `url: ${req.url} not found.`);
+	    return res.status(404).json({message: `url: ${req.url} Not found.`});
+});
 
 
 
