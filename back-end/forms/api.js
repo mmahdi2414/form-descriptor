@@ -34,8 +34,10 @@ router.get('/:id' , (req , res) => {
     const form = service.getForm(id);
     console.log(form);
     if (form){
+        log('info', `find form with id= ${id}`);
         return res.status(200).json(form);
     }
+    log('error', `can't find form with id= ${id}`);
     return res.status(400).json({message: "Bad Request (not found)"});
 });
 
