@@ -1,61 +1,49 @@
 import React from 'react';
-import  './Home.css';
-import * as axios from 'axios';
-import {List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Avatar, IconButton , Typography} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import EditRounded from '@material-ui/icons/EditRounded';
+import HomeRounded from '@material-ui/icons/HomeRounded';
+import {BrowserRouter as Router, Switch, Route, Link} from 'react-router-dom';
+import {Layout, Menu} from 'antd';
+import Forms from './../Forms/Forms';
+
+const {Content, Footer, Sider} = Layout;
 
 class Home extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {data: [{title:"form1" , id: '1'}]};
-        this.cnt = 0;
-    }
-    
-	componentDidMount() {
-        this.cnt = 1;	
-        axios.get('http://localhost:8000/api/form')
-        .then((response)=>{
-            this.setState({data: response.data});
-        })
-        .catch(error=>{
-            alert(`error = ${error}`);
-        });	
-    }
-    generate = (data)=> {
-        let id = `form${data.id}`;
-        this.cnt++;
-        return (
-            <ListItem id={id}>
-                  <ListItemAvatar>
-                    <Avatar src='form.png'>
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary= {data.title}
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="edit">
-                      <EditIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-        );
-    }
-    
     render() {
         return (
-            <div>
-                <Typography variant="h6" >
-                    List of Forms
-                </Typography>
-                <div>
-                    <List dense={true}>
-                    {this.state.data.map((element)=> this.generate(element))}
-                    </List>
-                </div>
-            </div>
+            <Router>
+                <Layout>
+                    <Sider breakpoint="lg" collapsedWidth="0">
+                            <Menu theme="dark" mode="inline">
+                                <Menu.Item key="1">
+                                    <Link to="/">
+                                    <HomeRounded />
+                                        <span className="nav-text">Home</span>
+                                    </Link>
+                                </Menu.Item>
+                                <Menu.Item key="2">
+                                    <Link to="/forms">
+                                    <EditRounded />
+                                        <span className="nav-text">Forms</span>
+                                    </Link>
+                                </Menu.Item>
+                            </Menu>
+                    </Sider>
+                    <Layout style={{ minHeight: '100vh' }}>
+                        <Content style={{ margin: '24px 16px 0' }}>
+                            <div style={{ padding: 24, background: '#fff', minHeight: '100vh' }}>
+                                <Switch>
+                                    <Route exact path="/">
+                                        <h1>This is a simple project</h1>
+                                    </Route>
+                                    <Route path="/forms/" component={Forms} />
+                                </Switch>
+                            </div>
+                        </Content>
+                        <Footer style={{ textAlign: 'center' }}>M.Mahdi Ahangaran & Armin Mazloomi ©2020</Footer>
+                    </Layout>
+                </Layout>
+            </Router>
         );
     }
 }
-
 export default Home;
