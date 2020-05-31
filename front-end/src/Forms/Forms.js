@@ -37,7 +37,7 @@ class Forms extends React.Component {
                   <ListItemText
                     primary= {data.title}
                   />
-                  <Link to={`forms/${data.id}`}>
+                  <Link to={`${this.props.match.path}/${data.id}`}>
                     <IconButton edge={false} aria-label="edit">
                       <EditIcon />
                     </IconButton>
@@ -49,13 +49,13 @@ class Forms extends React.Component {
         return(
             <div>
                 <Switch>
-                    <Route exact path='/forms/'>
+                    <Route exact path='/form'>
                         <h2>Forms</h2>
                         <List dense={true}>
                             {this.state.data.map((element)=> this.generate(element))}
                         </List>
                     </Route>
-                    <Route path={'/forms/:id'} component={Form} />
+                    <Route path={'/form/:id'} component={Form} />
 
                 </Switch>
             </div>
