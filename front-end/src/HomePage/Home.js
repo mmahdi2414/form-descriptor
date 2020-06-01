@@ -7,10 +7,10 @@ import {
     Route,
     Link,
   } from 'react-router-dom';
-  import {
+import {
     Layout,
     Menu,
-  } from 'antd';
+} from 'antd';
 import Forms from './../Forms/Forms';
 const {
     Content, Footer, Sider,
