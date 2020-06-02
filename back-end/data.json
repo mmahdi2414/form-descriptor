@@ -14,7 +14,7 @@
 				{
 					"name": "Loc",
 					"title": "Your Location",
-					"type": "Location",
+					"type": "Number",
 					"required": false
 				},
 				{
