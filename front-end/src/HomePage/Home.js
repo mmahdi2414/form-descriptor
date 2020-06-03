@@ -36,7 +36,7 @@ class Home extends React.Component {
                             </Menu.Item>
                             </Menu>
                     </Sider>
-                    <Layout style={{ minWidth:'100vh', minHeight: '100vh' }}>
+                    <Layout style={{minHeight: '100vh' }}>
                         <Content style={{ margin: '24px 16px 0' }}>
                             <div style={{ padding: 24, background: '#fff', minHeight: '100vh' }}>
                             <Switch>

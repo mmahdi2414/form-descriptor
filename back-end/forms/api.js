@@ -44,7 +44,7 @@ router.get('/:id' , (req , res) => {
 router.post('/:id' , (req , res) => {
     const id = req.params.id;
     const form = req.body;
-    log('info' , form);
+    log('info' , JSON.stringify(form , null , '\t'));
     return res.status(200).json({message: `successful submit form with id = ${id}`});
 });
 

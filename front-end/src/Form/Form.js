@@ -1,20 +1,22 @@
 import React from 'react';
-import {MDBCol, MDBInput, MDBBtn, MDBSelectInput, MDBSelect, MDBSelectOptions, MDBSelectOption} from 'mdbreact';
+import {MDBCol, MDBInput, MDBBtn, MDBSelectInput, MDBSelect, MDBSelectOptions, MDBSelectOption, MDBRow} from 'mdbreact';
 import axios from 'axios';
 import Select from 'react-select';
+import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 class Form extends React.Component{
     
-	// constructor(){
-		// super(this.props);
-		state={submitted:false , form:{ title:' ' , id:' ' ,fields:[] } , names:{}};
-	// }
-	
-    componentDidMount(){
+	state={submitted:false , form:{ title:' ' , id:' ' ,fields:[]} , names:{}};
+	layout = {
+		labelCol: { span: 8 },
+		wrapperCol: { span: 16 },
+	};
+	componentDidMount(){
         axios.get(`/api/form/${this.props.match.params.id}`)
         .then((response)=>{
 			let names = {};
 			response.data.fields.forEach(element => {
-				names[element.name] = {name:'' , valid:false};
+				names[element.name] = {value:(element.options && element.required ? element.options[0] : '') , valid:false , required:element.required};
 			});
             this.setState({form: response.data , names:names});
         })
@@ -22,61 +24,76 @@ class Form extends React.Component{
             alert(`error = ${error}`);
         });	
     }
-    
-    submitHandler = event => {
+    HandleClicked = event => {
+		let form = this.state.form;
+		let newNames={};
+		let notOk = false;
+		let names = this.state.names;
+		form.fields.forEach(elem => {
+			let element = elem.name;
+			newNames[element] = {value:names[element].value, valid:(names[element].required===true && names[element].value==''), required:names[element].required};
+			notOk |= newNames[element].valid; 
+		});
+		if (notOk){
+			this.setState({names:newNames});
+		}
+		else{
+			this.submitHandler(newNames);
+		}
+	}
+    submitHandler = (newNames)=> {
 		// alert(event.target.className);
-		event.preventDefault();
+		// event.preventDefault();
 		// event.target.className += ' was-validated';
-		this.setState({submitted: true});
+		this.setState({submitted: true , names:newNames});
 		alert(JSON.stringify(this.state.names));
     };
     
 	changeHandler = event => {
+		
 		let names = this.state.names;
-		names[event.target.name] = {name: event.target.value , valid:(event.target.required===false && !!event.target.value)};
+		names[event.target.name] = {value: event.target.value , valid:(event.target.required===true && !event.target.value) , required:event.target.required};
 		// alert(JSON.stringify(names));
 		this.setState({names: names});
 	};
 
 	handleChange = name => value =>{
 		let names = this.state.names;
-		names[name] = {name:value.value , valid:true};
+		names[name] = {value:value.value , valid:true , required:names[name].required};
 		this.setState({names: names});
 	}
 	getTextField = (element)=>{
 		if (element.options){
 			return(
-				<MDBCol md="100%">
+				<MDBRow md='6'>
 					<span>Select {element.title}</span>
-					<Select defaultValue={element.required ? '' : element.options[0]} label={element.title} name={element.name} onChange={this.handleChange(element.name)} options={element.options} />
-				</MDBCol>
+					<Select defaultValue={element.required ? element.options[0] : ''} label={element.title} name={element.name} onChange={this.handleChange(element.name)} options={element.options} />
+				</MDBRow>
 			);
 		}
 		return (
-			<MDBCol md="100%">
-              <MDBInput
-                value={this.state.names[element.name].name}
+			<MDBRow>
+              <TextField 	
+				error={this.state.names[element.name].valid}
+                value={this.state.names[element.name].value}
                 onChange={this.changeHandler}
-				type="text"
-				id='materialFormRegisterPasswordEx4'
+				type={element.type}
+				id={element.type}
                 name={element.name}
 				label={element.title}
-				outline
-                required={element.required}
-              >
-				  <div className='invalid-feedback ml-3 pl-3'>
-                  	این فیلد الزامی است
-                </div>
-              </MDBInput>
-          </MDBCol>
+				InputLabelProps={{
+					shrink: true,
+				}}
+				required={element.required}
+				helperText={this.state.names[element.name].valid&&('این فیلد الزامی است')}
+              />
+			  </MDBRow>
 		);
 	}
-
 	generate = (field) =>{
-		if(field.type==='Text' || field.type === 'Number')
+		if(field.type==='Text' || field.type === 'Number' || field.type==='Date')
 			return this.getTextField(field);
-		else{
-			// return <h1>{`${field.name}`}</h1>
+		else {
 		}
 	}
 
@@ -88,12 +105,12 @@ class Form extends React.Component{
 			<div style={{height:'100%',with:'100%'}}>
 				<h1>{`${this.state.form.title}`}</h1>
 				<form
-					className='needs-validation was-validated'
-					onSubmit={this.submitHandler}
-					validate
-				>
+					// className=''
+					// onSubmit={this.submitHandler}
+				>	
+					
 					{this.state.form.fields.map(element=>this.generate(element))}
-					<MDBBtn color='primary' type='submit'>Submit Form</MDBBtn>
+					<button type="submit" class="btn btn-dark" onClick={this.HandleClicked}>Submit Form</button>
 				</form>
 			</div>
 		);

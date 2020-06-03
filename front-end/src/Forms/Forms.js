@@ -2,7 +2,7 @@ import React from 'react';
 import * as axios from 'axios';
 import {List, ListItem, ListItemAvatar, ListItemText, Avatar, IconButton} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import Form from './../Form/Form';
+import Form1 from './../Form/Form1';
 import {
     Switch,
     Route,
@@ -55,7 +55,7 @@ class Forms extends React.Component {
                             {this.state.data.map((element)=> this.generate(element))}
                         </List>
                     </Route>
-                    <Route path={'/form/:id'} component={Form} />
+                    <Route path={'/form/:id'} component={Form1} />
 
                 </Switch>
             </div>
